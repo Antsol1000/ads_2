@@ -35,28 +35,31 @@ public:
 
 template <class T>
 class OrderedList{
+
 private:
+
     struct Node{
         Node* next;
-        T* data;
+        T* value;
 
-        Node(T* data) {
-            this->data = data;
+        Node(T* value) {
+            this->value = value;
             next = nullptr;
         }
 
         ~Node() {
-            delete data;
+            delete value;
         }
 
         int get_key() {
-            return (*data).get_key();
+            return (*value).get_key();
         }
     };
 
     Node* head;
 
 public:
+
     OrderedList() {
         head = nullptr;
     }
@@ -70,8 +73,8 @@ public:
         }
     }
 
-    void add(T* item) {
-        Node* temp = new Node(item);
+    void add(T* value) {
+        Node* temp = new Node(value);
         temp->next = head;
         head = temp;
     }
@@ -79,7 +82,7 @@ public:
     void display() {
         Node* ptr = head;
         while (ptr != nullptr) {
-            (ptr->data)->display();
+            (ptr->value)->display();
             ptr = ptr->next;
         }
     }
@@ -88,7 +91,7 @@ public:
         Node* ptr = head;
         while (ptr != nullptr) {
             if (ptr->get_key() == key) {
-                return ptr->data;
+                return ptr->value;
             }
             ptr = ptr->next;
         }
@@ -118,6 +121,50 @@ public:
         }
         return counter;
     }
+};
+
+template<class T>
+class BinarySearchTree{
+
+private:
+
+    struct Node{
+        Node* left_child, right_child, parent;
+        T* value;
+
+        Node(T* value) {
+            this->value = value;
+            this->left_child = nullptr;
+            this->right_child = nullptr;
+            this->parent = nullptr;
+        }
+
+        ~Node() {
+            delete value;
+        }
+
+        int get_key() {
+            return (*value).get_key();
+        }
+    };
+
+    Node* root;
+
+public:
+
+    BinarySearchTree();
+
+    ~BinarySearchTree();
+
+    void add(T* item);
+
+    void remove(int key);
+
+    void display();
+
+    void find(int key);
+
+    int size();
 };
 
 
