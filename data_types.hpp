@@ -79,9 +79,9 @@ public:
     }
 
     void add(T* value) {
-        Node* temp = new Node(value);
-        temp->next = head;
-        head = temp;
+        Node* new_node = new Node(value);
+        new_node->next = head;
+        head = new_node;
     }
 
     void display() {
@@ -90,6 +90,16 @@ public:
             (ptr->value)->display();
             ptr = ptr->next;
         }
+    }
+
+    void print() {
+        std::string result = "";
+        Node* iterator = head;
+        while (iterator != nullptr) {
+            result = result + std::to_string(iterator->get_key()) + " ";
+            iterator = iterator->next;
+        }
+        std::cout << result << std::endl;
     }
 
     T* find(int key) {

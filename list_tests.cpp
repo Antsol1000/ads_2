@@ -5,16 +5,16 @@ int main() {
     OrderedList<Student> lista;
     lista.add(new Student("a", "b", 1));
     lista.add(new Student("antek", "sysol", 2));
-    std::cout << "\n";
-    lista.display();
-    std::cout << lista.size() << "\n\n";
-    Student* s = lista.find(1);
-    s->display();
-    lista.remove(1);
-    std::cout << "\n";
-    lista.display();
-    std::cout << lista.size() << "\n";
+    lista.add(new Student("kot", "bonifacy", 3));
+    lista.add(new Student("pies", "jamnik", 4));
 
-   // Student* ptr = lista.find(1);
-   // std::cout << (*ptr).get_name();
+    lista.display();
+    lista.print();
+    std::cout << std::endl;
+
+    lista.remove(3);
+
+    lista.display();
+    lista.print();
+    std::cout << std::endl;
 }
