@@ -204,20 +204,32 @@ private:
         }
     }
 
-    void display_recursive(Node* node, int level, int tabs, std::string graph[]) {
+    ///USED BY DISPLAY FUNCTION
+    void bfs_lvl(Node* node, int lvl, int blanks){
+        if(node == nullptr)
+        {for(int j = 0; j <(1<<lvl)*blanks; j++){std::cout<<"  ";}}
+        else if(lvl == 0){
+            for(int j = 0; j <blanks; j++){std::cout<<" ";}
+            std::cout<<node->get_key();
+            for(int j = 0; j <blanks; j++){std::cout<<" ";}}
+        else{
+            bfs_lvl(node->left, lvl-1, blanks);
+            bfs_lvl(node->right, lvl-1, blanks);
+        }
+    }
 
-        for (int i = 0; i < tabs; i++)
-            graph[level] = graph[level] + '\t';
+    ///USED BY DISPLAY HEIGHT FUNCTION
+    int height_recursive(Node* node){
+        if(node == nullptr){
+            return 0;
+        }
+        else{
+            int lh = height_recursive(node->left);
+            int rh = height_recursive(node->right);
 
-        graph[level] = graph[level] + std::to_string(node->get_key());
-
-        for (int i = 0; i < tabs; i++)
-            graph[level] = graph[level] + '\t';
-
-        if (node->left != nullptr)
-            display_recursive(node->left, level + 1, tabs / 2, graph);
-        if (node->right != nullptr)
-            display_recursive(node->right, level + 1, tabs / 2, graph);
+            if(lh<rh){return rh + 1;}
+            else{return lh +1;}
+        }
     }
 
 public:
@@ -277,7 +289,8 @@ public:
 
 
     ///WILL RETURN HEIGHT
-    int get_height();
+    int get_height(){
+        return height_recursive(root);}
 
     ///WILL RETURN SIZE
     int get_size() {
@@ -327,20 +340,22 @@ public:
 
     void print_postorder() {
         std::cout << std::endl;
-        postorder(root);
+        postorder_recursive(root);
         std::cout << std::endl;
     }
 
-    // to ma wypisac ladnie w strukturze drzewka ale nie wiem czy dziala :((
-    void display() {
-        int size = this->get_size();
-        std::string graph[size + 1];
-        int level = 0, tabs = pow(2, ceil(log2(size)));
+    // troche nie moglam sie polapac jak dziala, tez nie dziala jakos swietnie, ale wstepnie POWINNO byc w miare ok D:
 
-        display_recursive(root, level, tabs, graph);
+    ///BFS WYPIS
+    void displayBSF() {
+        int max_height = this->get_height();
+        std::cout<<"max height = "<< max_height<<std::endl;
+        for(int h = 0; h<=max_height;h++){
+            int blanks = (2<<(max_height - h))/2;
+            bfs_lvl(root, h, blanks);
+            std::cout<<""<<std::endl;
 
-        for (std::string line : graph)
-            std::cout << line << std::endl;
+        }
     }
 
     // te trzy pierwsze funkcje chyba mogą być prywante a tylko ostatnia publiczna :)

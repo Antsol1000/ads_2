@@ -9,14 +9,17 @@ int main(){
     bonzaj.add( new Student(" ", " ",3));
     bonzaj.add( new Student(" ", " ",7));
     bonzaj.add( new Student(" ", " ",5));
+    bonzaj.add( new Student(" ", " ",12));
+    bonzaj.add( new Student(" ", " ",8));
+    bonzaj.add( new Student(" ", " ",6));
     bonzaj.add( new Student(" ", " ",9));
     bonzaj.searching(7);
     bonzaj.print_inorder();
-    bonzaj.display();
-    bonzaj.deletenode(7);
+    bonzaj.displayBSF();
+    bonzaj.deletenode(4);
     //in order jako sprawdzenie czy dzia³a wsm
     bonzaj.print_inorder();
-    bonzaj.display();
+    bonzaj.displayBSF();
 
 
 return 0;}
