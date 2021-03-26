@@ -39,11 +39,11 @@ public:
 };
 
 template <class T>
-class OrderedList{
+class OrderedList {
 
 private:
 
-    struct Node{
+    struct Node {
         Node* next;
         T* value;
 
@@ -139,11 +139,11 @@ public:
 };
 
 template <class T>
-class BinarySearchTree{
+class BinarySearchTree {
 
 private:
 
-    struct Node{
+    struct Node {
         Node* left;
         Node* right;
         T* data;
@@ -176,7 +176,7 @@ private:
         return 1 + get_size_recursive(node->left) + get_size_recursive(node->right);
     }
 
-    void print_node(Node* node){
+    void print_node(Node* node) {
         std::cout << node->get_key() << ": ";
     }
 
@@ -196,7 +196,7 @@ private:
         }
     }
 
-    void postorder_recursive(Node* cur){
+    void postorder_recursive(Node* cur) {
         if(cur != nullptr) {
             postorder_recursive(cur->right);
             print_node(cur);
@@ -205,36 +205,92 @@ private:
     }
 
     ///USED BY DISPLAY FUNCTION
-    void bfs_lvl(Node* node, int lvl, int blanks){
-        if(node == nullptr)
-        {for(int j = 0; j <(1<<lvl)*blanks; j++){std::cout<<"  ";}}
-        else if(lvl == 0){
-            for(int j = 0; j <blanks; j++){std::cout<<" ";}
+    void bfs_lvl(Node* node, int lvl, int blanks) {
+        if(node == nullptr) {
+            for(int j = 0; j <(1<<lvl)*blanks; j++) {
+                std::cout<<"  ";
+            }
+        } else if(lvl == 0) {
+            for(int j = 0; j <blanks; j++) {
+                std::cout<<" ";
+            }
             std::cout<<node->get_key();
-            for(int j = 0; j <blanks; j++){std::cout<<" ";}}
-        else{
+            for(int j = 0; j <blanks; j++) {
+                std::cout<<" ";
+            }
+        } else {
             bfs_lvl(node->left, lvl-1, blanks);
             bfs_lvl(node->right, lvl-1, blanks);
         }
     }
 
     ///USED BY DISPLAY HEIGHT FUNCTION
-    int height_recursive(Node* node){
-        if(node == nullptr){
+    int height_recursive(Node* node) {
+        if(node == nullptr) {
             return 0;
-        }
-        else{
+        } else {
             int lh = height_recursive(node->left);
             int rh = height_recursive(node->right);
 
-            if(lh<rh){return rh + 1;}
-            else{return lh +1;}
+            if(lh<rh) {
+                return rh + 1;
+            } else {
+                return lh +1;
+            }
         }
+    }
+
+    ///DELETING A NODE
+    //smolest in right
+    Node* RST(Node* bulwa) {
+        while(bulwa->left != nullptr) {
+            bulwa= bulwa->left;
+        }
+        return bulwa;
+    }
+
+    //biggest in left
+    Node* LST(Node* bulwa) {
+        while(bulwa->left != nullptr) {
+            bulwa= bulwa->right;
+        }
+        return bulwa;
+    }
+
+    Node* delete_node(Node* node, int ID) {
+        if(node== NULL) {
+            //node is a leaf
+            return node;
+        } else if(node->get_key() > ID) {
+            node->left = delete_node(node->left, ID);
+        } else if(node->get_key() < ID) {
+            node->right = delete_node(node->right, ID);
+        } else {
+            //now we are in the parent of the node to be deleted, we will have to use either LST or RST to find a replacement for it
+            //1 CHILD
+            if(node->left == nullptr) {
+                Node* pom = node->right;
+                delete node;
+                return pom;
+            } else if(node->right == nullptr) {
+                Node* pom = node->left;
+                delete node;
+                return pom;
+            } else {
+                //2 CHILDREN
+                //2 choices - LST or RST
+                Node* pom = RST(node->right);
+                node->data = pom->data;
+                node->right = delete_node(node->right, pom->get_key());
+            }
+        }
+        return node;
+
     }
 
 public:
 
-    BinarySearchTree(){
+    BinarySearchTree() {
         root = nullptr;
     }
 
@@ -247,40 +303,35 @@ public:
     */
 
     bool is_empty() {
-    /// CHECK IF EMPTY
+        /// CHECK IF EMPTY
         if (root == nullptr) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-    void add(T* data){
-    ///INSERTING A NODE
+    void add(T* data) {
+        ///INSERTING A NODE
         Node* newnode = new Node(data);
         int key = newnode->get_key();
 
         if (this->is_empty() == true) {
             root = newnode;
-        }
-        else {
+        } else {
             Node* iterator = root;
             while (iterator != NULL) {
                 if (iterator->get_key() > key && iterator->left == nullptr) {
                     iterator->left = newnode;
                     // std::cout<<"Installed to the left"<<std::endl;
                     break;
-                }
-                else if (iterator->get_key() > key) {
+                } else if (iterator->get_key() > key) {
                     iterator = iterator->left;
-                    }
-                else if(iterator->get_key() < key && iterator->right == nullptr) {
+                } else if(iterator->get_key() < key && iterator->right == nullptr) {
                     iterator->right = newnode;
                     // std::cout<<"Installed to the right"<<std::endl;
                     break;
-                }
-                else {
+                } else {
                     iterator = iterator->right;
                 }
             }
@@ -289,8 +340,9 @@ public:
 
 
     ///WILL RETURN HEIGHT
-    int get_height(){
-        return height_recursive(root);}
+    int get_height() {
+        return height_recursive(root);
+    }
 
     ///WILL RETURN SIZE
     int get_size() {
@@ -301,26 +353,23 @@ public:
         return 1 + get_size_recursive(root->left) + get_size_recursive(root->right);
     }
 
-    Node* searching(int ID){
-    ///SEARCHING FOR A PARTICULAR INDEX
+    Node* searching(int ID) {
+        ///SEARCHING FOR A PARTICULAR INDEX
         Node* temp = root;
         int key;
         while (temp != nullptr) {
             key = temp->get_key();
             if (key == ID) {
                 break;
-            }
-            else if (key > ID) {
+            } else if (key > ID) {
                 temp = temp->left;
-                }
-            else {
+            } else {
                 temp = temp->right;
             }
         }
         if (temp == nullptr ) {
             std::cout << "No such element found :(" << std::endl;
-        }
-        else {
+        } else {
             std::cout << "Searched element is: " << temp->get_value() << std::endl;
         }
         return temp;
@@ -350,7 +399,7 @@ public:
     void displayBSF() {
         int max_height = this->get_height();
         std::cout<<"max height = "<< max_height<<std::endl;
-        for(int h = 0; h<=max_height;h++){
+        for(int h = 0; h<=max_height; h++) {
             int blanks = (2<<(max_height - h))/2;
             bfs_lvl(root, h, blanks);
             std::cout<<""<<std::endl;
@@ -358,57 +407,7 @@ public:
         }
     }
 
-    // te trzy pierwsze funkcje chyba mogą być prywante a tylko ostatnia publiczna :)
-
-    ///DELETING A NODE
-    //smolest in right
-    Node* RST(Node* bulwa){
-    while(bulwa->left != nullptr){
-        bulwa= bulwa->left;}
-    return bulwa;}
-
-    //biggest in left
-    Node* LST(Node* bulwa){
-    while(bulwa->left != nullptr){
-        bulwa= bulwa->right;}
-    return bulwa;}
-
-    Node* delete_node(Node* node, int ID){
-        if(node== NULL){
-            //node is a leaf
-            return node;
-        }
-        else if(node->get_key() > ID){
-            node->left = delete_node(node->left, ID);
-        }
-        else if(node->get_key() < ID){
-            node->right = delete_node(node->right, ID);
-        }
-        else{
-            //now we are in the parent of the node to be deleted, we will have to use either LST or RST to find a replacement for it
-            //1 CHILD
-            if(node->left == nullptr){
-                Node* pom = node->right;
-                delete node;
-                return pom;
-            }
-            else if(node->right == nullptr){
-                Node* pom = node->left;
-                delete node;
-                return pom;
-            }
-            else{
-                //2 CHILDREN
-                //2 choices - LST or RST
-                Node* pom = RST(node->right);
-                node->data = pom->data;
-                node->right = delete_node(node->right, pom->get_key());
-            }
-        }
-        return node;
-
-    }
-    void deletenode(int ID){
+    void deletenode(int ID) {
         delete_node(root, ID);
     }
 
