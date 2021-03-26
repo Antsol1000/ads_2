@@ -1,5 +1,6 @@
 #include<iostream>
-#include"data_types.hpp"
+#include"student.hpp"
+#include"tree.hpp"
 
 int main(){
     BinarySearchTree<Student> bonzaj;
@@ -17,7 +18,7 @@ int main(){
     bonzaj.print_inorder();
     bonzaj.displayBSF();
     bonzaj.deletenode(4);
-    //in order jako sprawdzenie czy dzia³a wsm
+    //in order jako sprawdzenie czy dziala wsm
     bonzaj.print_inorder();
     bonzaj.displayBSF();
     bonzaj.deletenode(7);

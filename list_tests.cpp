@@ -1,5 +1,6 @@
 #include<iostream>
-#include"data_types.hpp"
+#include"student.hpp"
+#include"list.hpp"
 
 int main() {
     OrderedList<Student> lista;
