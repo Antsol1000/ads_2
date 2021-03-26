@@ -1,6 +1,6 @@
 #ifndef TREE_HPP_INCLUDED
 #define TREE_HPP_INCLUDED
-#include <typeinfo>
+
 template <class T>
 class BinarySearchTree {
 
@@ -122,7 +122,6 @@ private:
 
     Node* delete_node(Node* node, int ID) {
         if(node== NULL) {
-            //node is a leaf
             return node;
         } else if(node->get_key() > ID) {
             node->left = delete_node(node->left, ID);
@@ -150,37 +149,22 @@ private:
         return node;
 
     }
-/*
-    Node* add_recursive(Node* newnode, Node* cur){
-        if (cur == nullptr || this->is_empty()==true){
-            cur = newnode;
-            std::cout<<root->get_key()<<std::endl;
-            return cur;
-            }
-
-        if(cur->get_key()> newnode->get_key()){
-                cur->left = add_recursive(newnode,cur-> left);
-        }
-        else{
-            cur->right = add_recursive(newnode,cur->right);
-            }
-
-        return cur;}
-*/
 
 public:
 
     BinarySearchTree() {
         root = nullptr;
     }
-
-    // no akurat destruktor to by sie przydal :-(
-    // ale kto to wie jak go zrobic xD
-    //destructor BST
-    /*~BinarySearchTree(){
-
+    // powinno chyba działać, ale to jeszcze się zobaczy czy są jakieś leaki ¯\_( ͡❛ ͜ʖ ͡❛)_/¯
+    void avalanche_of_node_death(Node* node){
+        if(node)
+            avalanche_of_node_death(node->left);
+            avalanche_of_node_death(node->right);
+            node->~Node();
+        }
+    ~BinarySearchTree() {
+        avalanche_of_node_death(root);
     }
-    */
 
     bool is_empty() {
         /// CHECK IF EMPTY
@@ -190,7 +174,7 @@ public:
             return false;
         }
     }
-    //-potrzebne do AVL, wi�c przy por�wnywaniu czasu tutaj wsm te� powinna by� podobna
+    //-potrzebne do AVL, wiêc przy porównywaniu czasu, więc tutaj wsm te¿ powinna byæ podobna
     Node* add_recursive(Node* newnode, Node* cur) {
             if (cur == nullptr){
             cur = newnode;
@@ -206,12 +190,10 @@ public:
 
         return cur;}
 
-    Node* add(T* data){
+    void add(T* data){
     ///INSERTING A NODE RECURSIV
 
         Node* newnode = new Node(data);
-        int key = newnode->get_key();
-        //std::cout<<key<<std::endl;
         root =add_recursive(newnode, root);
     }
 
@@ -269,8 +251,6 @@ public:
         std::cout << std::endl;
     }
 
-    // troche nie moglam sie polapac jak dziala, tez nie dziala jakos swietnie, ale wstepnie POWINNO byc w miare ok D:
-
     ///BFS WYPIS
     void displayBSF() {
         int max_height = this->get_height();
@@ -285,35 +265,6 @@ public:
 
     void deletenode(int ID) {
         delete_node(root, ID);
-    }
-    ///-sekcja rzeczy niepotrzebnych, ale w razie jak rekursja nie bd dzialac to wol� nie spisywa� tego od razu na straty
-    ///nie jest potrzebne
-    void add_non_recur(T* data) {
-        ///INSERTING A NODE
-        Node* newnode = new Node(data);
-        int key = newnode->get_key();
-
-        if (this->is_empty() == true) {
-            std::cout<<(int)(this->is_empty())<<std::endl;
-            root = newnode;
-        } else {
-            Node* iterator = root;
-            while (iterator != NULL) {
-                if (iterator->get_key() > key && iterator->left == nullptr) {
-                    iterator->left = newnode;
-                    // std::cout<<"Installed to the left"<<std::endl;
-                    break;
-                } else if (iterator->get_key() > key) {
-                    iterator = iterator->left;
-                } else if(iterator->get_key() < key && iterator->right == nullptr) {
-                    iterator->right = newnode;
-                    // std::cout<<"Installed to the right"<<std::endl;
-                    break;
-                } else {
-                    iterator = iterator->right;
-                }
-            }
-        }
     }
 };
 
