@@ -1,6 +1,6 @@
 #ifndef TREE_HPP_INCLUDED
 #define TREE_HPP_INCLUDED
-
+#include <typeinfo>
 template <class T>
 class BinarySearchTree {
 
@@ -150,6 +150,23 @@ private:
         return node;
 
     }
+/*
+    Node* add_recursive(Node* newnode, Node* cur){
+        if (cur == nullptr || this->is_empty()==true){
+            cur = newnode;
+            std::cout<<root->get_key()<<std::endl;
+            return cur;
+            }
+
+        if(cur->get_key()> newnode->get_key()){
+                cur->left = add_recursive(newnode,cur-> left);
+        }
+        else{
+            cur->right = add_recursive(newnode,cur->right);
+            }
+
+        return cur;}
+*/
 
 public:
 
@@ -173,34 +190,30 @@ public:
             return false;
         }
     }
+    //-potrzebne do AVL, wiêc przy porównywaniu czasu tutaj wsm te¿ powinna byæ podobna
+    Node* add_recursive(Node* newnode, Node* cur) {
+            if (cur == nullptr){
+            cur = newnode;
+            return cur;
+            }
+            else if(cur->get_key()> newnode->get_key())
+            {
+            cur->left = add_recursive(newnode,cur-> left);
+            }
+            else{
+            cur->right = add_recursive(newnode,cur->right);
+            }
 
-    void add(T* data) {
-        ///INSERTING A NODE
+        return cur;}
+
+    Node* add(T* data){
+    ///INSERTING A NODE RECURSIV
+
         Node* newnode = new Node(data);
         int key = newnode->get_key();
-
-        if (this->is_empty() == true) {
-            root = newnode;
-        } else {
-            Node* iterator = root;
-            while (iterator != NULL) {
-                if (iterator->get_key() > key && iterator->left == nullptr) {
-                    iterator->left = newnode;
-                    // std::cout<<"Installed to the left"<<std::endl;
-                    break;
-                } else if (iterator->get_key() > key) {
-                    iterator = iterator->left;
-                } else if(iterator->get_key() < key && iterator->right == nullptr) {
-                    iterator->right = newnode;
-                    // std::cout<<"Installed to the right"<<std::endl;
-                    break;
-                } else {
-                    iterator = iterator->right;
-                }
-            }
-        }
+        //std::cout<<key<<std::endl;
+        root =add_recursive(newnode, root);
     }
-
 
     ///WILL RETURN HEIGHT
     int get_height() {
@@ -217,7 +230,7 @@ public:
     }
 
     Node* searching(int ID) {
-        ///SEARCHING FOR A PARTICULAR INDEX
+    ///SEARCHING FOR A PARTICULAR INDEX
         Node* temp = root;
         int key;
         while (temp != nullptr) {
@@ -273,7 +286,35 @@ public:
     void deletenode(int ID) {
         delete_node(root, ID);
     }
+    ///-sekcja rzeczy niepotrzebnych, ale w razie jak rekursja nie bd dzialac to wolê nie spisywaæ tego od razu na straty
+    ///nie jest potrzebne
+    void add_non_recur(T* data) {
+        ///INSERTING A NODE
+        Node* newnode = new Node(data);
+        int key = newnode->get_key();
 
+        if (this->is_empty() == true) {
+            std::cout<<(int)(this->is_empty())<<std::endl;
+            root = newnode;
+        } else {
+            Node* iterator = root;
+            while (iterator != NULL) {
+                if (iterator->get_key() > key && iterator->left == nullptr) {
+                    iterator->left = newnode;
+                    // std::cout<<"Installed to the left"<<std::endl;
+                    break;
+                } else if (iterator->get_key() > key) {
+                    iterator = iterator->left;
+                } else if(iterator->get_key() < key && iterator->right == nullptr) {
+                    iterator->right = newnode;
+                    // std::cout<<"Installed to the right"<<std::endl;
+                    break;
+                } else {
+                    iterator = iterator->right;
+                }
+            }
+        }
+    }
 };
 
 #endif // TREE_HPP_INCLUDED
