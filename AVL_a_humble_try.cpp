@@ -27,6 +27,9 @@ int main(){
     printf("bobo");
     sosna.deletenode(1);
     sosna.displayBSF();
+    sosna.add( new Student("kot", "bonifacy",46));
+    sosna.add( new Student("kot", "bonifacy",45));
+    sosna.displayBSF();
     sosna.deletenode(3);
     sosna.displayBSF();
 

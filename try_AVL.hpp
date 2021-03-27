@@ -41,11 +41,8 @@ private:
         child = node->left;
         Node* grandchild;
         grandchild = child->left;
-        Node* temp;
-        temp = child->right;
-        node->left = temp;
+        node->left = child->right;
         child->right = node;
-
         return child;}
 
     Node* rotatell(Node* node) {
@@ -53,9 +50,7 @@ private:
         child = node->right;
         Node* grandchild;
         grandchild = child->right;
-        Node* temp;
-        temp = child->left;
-        node->right = temp;
+        node->right = child->left;
         child->left = node;
 
         return child;}
@@ -82,8 +77,8 @@ private:
         grandchild = child->left;
         Node* temp1;
         Node* temp2;
-        temp1 = grandchild->right;
-        temp2 = grandchild->left;
+        temp2 = grandchild->right;
+        temp1 = grandchild->left;
         child->left = temp2;
         node->right = temp1;
         grandchild->right = child;
@@ -168,7 +163,6 @@ private:
         return bulwa;
     }
 
-    /// EHHHHHHH nie działa niestety jak ma działać, ale jeszcze będzie ogarniane
     Node* delete_node(Node* node, int ID) {
         if(node== NULL) {
             return node;
