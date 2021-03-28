@@ -1,11 +1,16 @@
 #ifndef TREE_HPP_INCLUDED
 #define TREE_HPP_INCLUDED
 
+/****************************/
+/***** BinarySearchTree *****/
+/****************************/
 template <class T>
 class BinarySearchTree {
 
+/*************** PROTECTED SECTION ************************/
 protected:
 
+    /**** NESTED NODE CLASS ****/
     class Node {
     public:
         Node* left;
@@ -31,8 +36,10 @@ protected:
         }
     };
 
+    /*** ROOT NODE ***/
     Node* root;
 
+    /*** USING BY get_size() METHOD ***/
     int get_size_recursive(Node* node) {
         if (node == nullptr) {
             return 0;
@@ -40,6 +47,7 @@ protected:
         return 1 + get_size_recursive(node->left) + get_size_recursive(node->right);
     }
 
+    /**************** PRINTING STUFF ***************************************/
     void print_node(Node* node) {
         std::cout << node->get_key() << ": ";
     }
@@ -87,6 +95,7 @@ protected:
             bfs_lvl(node->right, lvl-1, blanks);
         }
     }
+    /*************** END OF DISPLAY STUFF ****************************************/
 
     ///USED BY DISPLAY HEIGHT FUNCTION
     int height_recursive(Node* node) {
@@ -104,8 +113,7 @@ protected:
         }
     }
 
-    ///DELETING A NODE ***********************
-    //smolest in right
+    /******************** DELETING NODE STUFF *************************/
     Node* RST(Node* bulwa) {
         while(bulwa->left != nullptr) {
             bulwa= bulwa->left;
@@ -113,7 +121,6 @@ protected:
         return bulwa;
     }
 
-    //biggest in left
     Node* LST(Node* bulwa) {
         while(bulwa->left != nullptr) {
             bulwa= bulwa->right;
@@ -122,14 +129,15 @@ protected:
     }
 
     Node* delete_node(Node* node, int ID) {
-        if(node== NULL) {
+        if (node == NULL) {
             return node;
-        } else if(node->get_key() > ID) {
+        } else if (node->get_key() > ID) {
             node->left = delete_node(node->left, ID);
-        } else if(node->get_key() < ID) {
+        } else if (node->get_key() < ID) {
             node->right = delete_node(node->right, ID);
         } else {
-            //now we are in the parent of the node to be deleted, we will have to use either LST or RST to find a replacement for it
+            //now we are in the parent of the node to be deleted, we will have to use
+            //either LST or RST to find a replacement for it
             //1 CHILD
             if(node->left == nullptr) {
                 Node* pom = node->right;
@@ -148,7 +156,22 @@ protected:
             }
         }
         return node;
+    }
+    /************* END OF DELETING STUFF *************************************/
 
+    /**************** ADDING NODE RECURSIVE METHOD ****************/
+    Node* add_recursive(Node* newnode, Node* cur) {
+        if (cur == nullptr) {
+            cur = newnode;
+            return cur;
+        }
+        else if (cur->get_key() > newnode->get_key()) {
+            cur->left = add_recursive(newnode, cur-> left);
+        }
+        else {
+            cur->right = add_recursive(newnode, cur->right);
+        }
+        return cur;
     }
 
     /***** RECURSIVE FUNCTION FOR DESTRUCTOR *****/
@@ -163,6 +186,7 @@ protected:
 /******************** PUBLIC SECTION **********************/
 public:
 
+    /*** CONSTRUCTOR AND DESTRUCTOR ***/
     BinarySearchTree() {
         root = nullptr;
     }
@@ -170,9 +194,10 @@ public:
     ~BinarySearchTree() {
         avalanche_of_node_death(root);
     }
+    /**********************************/
 
+    /*** CHECK IF TREE IS EMPTY ***/
     bool is_empty() {
-        /// CHECK IF EMPTY
         if (root == nullptr) {
             return true;
         } else {
@@ -180,33 +205,23 @@ public:
         }
     }
 
-    Node* add_recursive(Node* newnode, Node* cur) {
-        if (cur == nullptr){
-            cur = newnode;
-            return cur;
-        }
-        else if(cur->get_key()> newnode->get_key()) {
-            cur->left = add_recursive(newnode,cur-> left);
-            }
-            else{
-            cur->right = add_recursive(newnode,cur->right);
-            }
-
-        return cur;}
-
-    void add(T* data){
-    ///INSERTING A NODE RECURSIV
-
-        Node* newnode = new Node(data);
+    /***** ADDING NODE METHOD *****/
+    void add(T* value){
+        Node* newnode = new Node(value);
         root =add_recursive(newnode, root);
     }
 
-    ///WILL RETURN HEIGHT
+    /***** REMOVING NODE METHOD *****/
+    void remove(int ID) {
+        delete_node(root, ID);
+    }
+
+    /***** RETURN HEIGHT OF TREE *****/
     int get_height() {
         return height_recursive(root);
     }
 
-    ///WILL RETURN SIZE
+    /***** RETURN NUMBER OF NODES *****/
     int get_size() {
         Node* iterator = root;
         if (this->is_empty()) {
@@ -215,8 +230,8 @@ public:
         return 1 + get_size_recursive(root->left) + get_size_recursive(root->right);
     }
 
+    /************ LOOKING FOR NODE WITH SPECIFIC INDEX ************/
     Node* searching(int ID) {
-    ///SEARCHING FOR A PARTICULAR INDEX
         Node* temp = root;
         int key;
         while (temp != nullptr) {
@@ -237,6 +252,7 @@ public:
         return temp;
     }
 
+    /**************** PRINTING AND DISPLAYING METHODS ************************/
     void print_preorder() {
         std::cout << std::endl;
         preorder_recursive(root);
@@ -266,10 +282,7 @@ public:
 
         }
     }
-
-    void deletenode(int ID) {
-        delete_node(root, ID);
-    }
+    /************** END OF DISPLAYING METHODS ******************************/
 };
 
 
@@ -350,7 +363,7 @@ private:
     }
     /***** END OF BALANCING METHODS *****/
 
-    /***** ADD / DEL METHODS *****/
+    /***** ADD RECURSIVE METHOD *****/
     auto add_recursive(auto newnode, auto cur) {
         if (cur == nullptr) {
             cur = newnode;
@@ -363,18 +376,19 @@ private:
         return balancing_act(cur);
     }
 
-    auto delete_node(auto node, int ID) {
+    /***** REMOVE RECURSIVE METHOD *****/
+    auto remove_recursive(auto node, int ID) {
         if (node == nullptr) {
             return node;
         } else if(node->get_key() > ID) {
-            node->left = delete_node(node->left, ID);
+            node->left = remove_recursive(node->left, ID);
             if(node->left) {
                 node->left = balancing_act(node->left);
             }
         } else if(node->get_key() < ID) {
-            node->right = delete_node(node->right, ID);
+            node->right = remove_recursive(node->right, ID);
             if(node->right) {
-                node->right =balancing_act(node->right);
+                node->right = balancing_act(node->right);
             }
         } else {
             if (node->left == nullptr) {
@@ -388,7 +402,7 @@ private:
             } else {
                 auto pom = this->RST(node->right);
                 node->data = pom->data;
-                node->right = delete_node(node->right, pom->get_key());
+                node->right = remove_recursive(node->right, pom->get_key());
                 if(node->right) {
                     node->right = balancing_act(node->right);
                 }
@@ -400,10 +414,11 @@ private:
 
 /************************** PUBLIC SECTION *****************************/
 public:
+    using BinarySearchTree<T>::BinarySearchTree;
 
     ///DELETION
-    void deletenode(int ID) {
-        BinarySearchTree<T>::root = delete_node(BinarySearchTree<T>::root, ID);
+    void remove(int ID) {
+        BinarySearchTree<T>::root = remove_recursive(BinarySearchTree<T>::root, ID);
         std::cout<<get_bf(BinarySearchTree<T>::root)<<std::endl;
         BinarySearchTree<T>::root = balancing_act(BinarySearchTree<T>::root);
         std::cout<<get_bf(BinarySearchTree<T>::root)<<std::endl;

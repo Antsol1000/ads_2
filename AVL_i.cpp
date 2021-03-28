@@ -16,15 +16,15 @@ int main(){
     sosna.add( new Student("kot", "bonifacy",55));
     sosna.add( new Student("kot", "bonifacy",56));
     sosna.displayBSF();
-    sosna.deletenode(56);
+    sosna.remove(56);
     sosna.displayBSF();
     printf("bobo");
-    sosna.deletenode(1);
+    sosna.remove(1);
     sosna.displayBSF();
     sosna.add( new Student("kot", "bonifacy",46));
     sosna.add( new Student("kot", "bonifacy",45));
     sosna.displayBSF();
-    sosna.deletenode(3);
+    sosna.remove(3);
     sosna.displayBSF();
     return 0;
 }
