@@ -4,9 +4,10 @@
 template <class T>
 class BinarySearchTree {
 
-private:
+protected:
 
-    struct Node {
+    class Node {
+    public:
         Node* left;
         Node* right;
         T* data;
@@ -103,7 +104,7 @@ private:
         }
     }
 
-    ///DELETING A NODE
+    ///DELETING A NODE ***********************
     //smolest in right
     Node* RST(Node* bulwa) {
         while(bulwa->left != nullptr) {
@@ -150,18 +151,22 @@ private:
 
     }
 
+    /***** RECURSIVE FUNCTION FOR DESTRUCTOR *****/
+    void avalanche_of_node_death(Node* node){
+        if (node) {
+            avalanche_of_node_death(node->left);
+            avalanche_of_node_death(node->right);
+            delete node;
+        }
+    }
+
+/******************** PUBLIC SECTION **********************/
 public:
 
     BinarySearchTree() {
         root = nullptr;
     }
-    // powinno chyba działać, ale to jeszcze się zobaczy czy są jakieś leaki ¯\_( ͡❛ ͜ʖ ͡❛)_/¯
-    void avalanche_of_node_death(Node* node){
-        if(node)
-            avalanche_of_node_death(node->left);
-            avalanche_of_node_death(node->right);
-            node->~Node();
-        }
+
     ~BinarySearchTree() {
         avalanche_of_node_death(root);
     }
@@ -174,14 +179,13 @@ public:
             return false;
         }
     }
-    //-potrzebne do AVL, wiêc przy porównywaniu czasu, więc tutaj wsm te¿ powinna byæ podobna
+
     Node* add_recursive(Node* newnode, Node* cur) {
-            if (cur == nullptr){
+        if (cur == nullptr){
             cur = newnode;
             return cur;
-            }
-            else if(cur->get_key()> newnode->get_key())
-            {
+        }
+        else if(cur->get_key()> newnode->get_key()) {
             cur->left = add_recursive(newnode,cur-> left);
             }
             else{
@@ -265,6 +269,152 @@ public:
 
     void deletenode(int ID) {
         delete_node(root, ID);
+    }
+};
+
+
+/****************************************************/
+/*** class template of the AVL Binary Search Tree ***/
+/****************************************************/
+
+template <class T>
+class BalancedBST : public BinarySearchTree<T> {
+
+private:
+
+    /***** START OF ROTATE METHODS *****/
+    auto rotate_rr(auto node) {
+        auto child = node->left;
+        auto grandchild = child->left;
+        node->left = child->right;
+        child->right = node;
+        return child;
+    }
+
+    auto rotate_ll(auto node) {
+        auto child = node->right;
+        auto grandchild = child->right;
+        node->right = child->left;
+        child->left = node;
+        return child;
+    }
+
+    auto rotate_rl(auto node) {
+        auto child = node->left;
+        auto grandchild = child->right;
+        auto temp1 = grandchild->right;
+        auto temp2 = grandchild->left;
+        child->right = temp2;
+        node->left = temp1;
+        grandchild->right = node;
+        grandchild->left = child;
+        return grandchild;
+    }
+
+    auto rotate_lr(auto node) {
+        auto child = node->right;
+        auto grandchild = child->left;
+        auto temp2 = grandchild->right;
+        auto temp1 = grandchild->left;
+        child->left = temp2;
+        node->right = temp1;
+        grandchild->right = child;
+        grandchild->left = node;
+        return grandchild;
+    }
+    /***** END OF ROTATE METHODS *****/
+
+    /***** START OF BALANCING METHODS *****/
+    int get_bf(auto root) {
+        if (root == nullptr) {
+            return 0;
+        } else {
+            return this->height_recursive(root->left) - this->height_recursive(root->right);
+        }
+    }
+
+    auto balancing_act(auto root) {
+        int bf = this->get_bf(root);
+        int bfl = this->get_bf(root->left);
+        int bfr = this->get_bf(root->right);
+        if (bf > 1 && bfl >= 1) {
+            root = rotate_rr(root);
+        } else if (bf < -1 && bfr <= 0) {
+            root = rotate_ll(root);
+        } else if (bf < -1 && bfr >= 0) {
+            root = rotate_lr(root);
+        } else if (bf > 1 && bfl <= -1) {
+            root = rotate_rl(root);
+        }
+        return root;
+    }
+    /***** END OF BALANCING METHODS *****/
+
+    /***** ADD / DEL METHODS *****/
+    auto add_recursive(auto newnode, auto cur) {
+        if (cur == nullptr) {
+            cur = newnode;
+            return cur;
+        } else if(cur->get_key()> newnode->get_key()) {
+            cur->left = add_recursive(newnode, cur->left);
+        } else {
+            cur->right = add_recursive(newnode, cur->right);
+        }
+        return balancing_act(cur);
+    }
+
+    auto delete_node(auto node, int ID) {
+        if (node == nullptr) {
+            return node;
+        } else if(node->get_key() > ID) {
+            node->left = delete_node(node->left, ID);
+            if(node->left) {
+                node->left = balancing_act(node->left);
+            }
+        } else if(node->get_key() < ID) {
+            node->right = delete_node(node->right, ID);
+            if(node->right) {
+                node->right =balancing_act(node->right);
+            }
+        } else {
+            if (node->left == nullptr) {
+                auto pom = node->right;
+                delete node;
+                return pom;
+            } else if(node->right == nullptr) {
+                auto pom = node->left;
+                delete node;
+                return pom;
+            } else {
+                auto pom = this->RST(node->right);
+                node->data = pom->data;
+                node->right = delete_node(node->right, pom->get_key());
+                if(node->right) {
+                    node->right = balancing_act(node->right);
+                }
+            }
+        }
+        return node;
+    }
+
+
+/************************** PUBLIC SECTION *****************************/
+public:
+
+    ///DELETION
+    void deletenode(int ID) {
+        BinarySearchTree<T>::root = delete_node(BinarySearchTree<T>::root, ID);
+        std::cout<<get_bf(BinarySearchTree<T>::root)<<std::endl;
+        BinarySearchTree<T>::root = balancing_act(BinarySearchTree<T>::root);
+        std::cout<<get_bf(BinarySearchTree<T>::root)<<std::endl;
+
+    }
+
+    ///INSERTION
+    auto add(T* data) {
+        typename BinarySearchTree<T>::Node* newnode;
+        newnode = new (typename BinarySearchTree<T>::Node)(data);
+        BinarySearchTree<T>::root =add_recursive(newnode, BinarySearchTree<T>::root);
     }
 };
 
