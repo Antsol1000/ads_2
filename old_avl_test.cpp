@@ -1,7 +1,7 @@
 #include<iostream>
 #include"student.hpp"
 #include"tree.hpp"
-#include"try_AVL.hpp"
+#include"old_avl.hpp"
 
 int main(){
     AVL<Student> sosna;
