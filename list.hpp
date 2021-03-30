@@ -11,8 +11,11 @@ class OrderedList {
 
 protected:
 
+    /*************************************/
+    /**** NODE STRUCTURE WITH STUDENT ****/
+    /*************************************/
     struct Node {
-        Node* next;
+        Node* next; /// POINTER TO NEXT NODE
         Student* value;
 
         Node(Student* value) {
@@ -21,6 +24,7 @@ protected:
         }
 
         ~Node() {
+            // this->value->display();
             delete value;
         }
 
@@ -29,8 +33,10 @@ protected:
         }
     };
 
+    /*** HEAD OF THE LIST ***/
     Node* head;
 
+    /***** PUSHES NEW NODE AT THE FRONT OF THE LIST *****/
     void push_front(Student* value) {
         Node* new_node = new Node(value);
         new_node->next = head;
@@ -39,6 +45,7 @@ protected:
 
 public:
 
+    /**** CONSTRUCTOR AND DESTRUCTOR *****/
     OrderedList() {
         head = nullptr;
     }
@@ -51,34 +58,11 @@ public:
             delete temp;
         }
     }
+    /**** END OF THE CONSTRUCTOR AND DESTRUCTOR ****/
 
-    void display() {
-        Node* ptr = head;
-        while (ptr != nullptr) {
-            (ptr->value)->display();
-            ptr = ptr->next;
-        }
-    }
-
-    void print() {
-        std::string result = "";
-        Node* iterator = head;
-        while (iterator != nullptr) {
-            result = result + std::to_string(iterator->get_key()) + " ";
-            iterator = iterator->next;
-        }
-        std::cout << result << std::endl;
-    }
-
-    Student* find(int key) {
-        Node* ptr = head;
-        while (ptr != nullptr) {
-            if (ptr->get_key() == key) {
-                return ptr->value;
-            }
-            ptr = ptr->next;
-        }
-        return nullptr;
+    /***** INSERT AND REMOVING METHODS *****/
+    void insert(Student* value) {
+        push_front(value);
     }
 
     void remove(int key) {
@@ -94,11 +78,41 @@ public:
         prev->next = ptr->next;
         delete ptr;
     };
+    /***** END OF IN/OUT METHODS *****/
 
-    void insert(Student* value) {
-        push_front(value);
+    /***** DISPLAY LIST OF THE STUDENTS *****/
+    void print_students() {
+        Node* ptr = head;
+        while (ptr != nullptr) {
+            (ptr->value)->display();
+            ptr = ptr->next;
+        }
     }
 
+    /***** DISPLAY LIST OF KEYS *****/
+    void print_keys() {
+        std::string result = "";
+        Node* iterator = head;
+        while (iterator != nullptr) {
+            result = result + std::to_string(iterator->get_key()) + " ";
+            iterator = iterator->next;
+        }
+        std::cout << result << std::endl;
+    }
+
+    /**** FIND NODE WITH STUDENT WITH GIVEN INDEX ****/
+    Student* find(int key) {
+        Node* ptr = head;
+        while (ptr != nullptr) {
+            if (ptr->get_key() == key) {
+                return ptr->value;
+            }
+            ptr = ptr->next;
+        }
+        return nullptr;
+    }
+
+    /**** CALCULATE THE LENGHT OF THE LIST ****/
     int size() {
         Node *ptr = head;
         int counter = 0;
@@ -119,6 +133,7 @@ class SortedList : public OrderedList {
 private:
 
     /*** FIND POSITION FOR ELEMENT ***/
+    /*** return left neighbor of the inserting node ***/
     Node* find_position(int key) {
         if (head == nullptr) {
             return nullptr;
