@@ -3,26 +3,28 @@
 #include"tree.hpp"
 
 int main(){
-    BinarySearchTree<Student> bonzaj;
-    bonzaj.add( new Student(" ", " ",4));
-    bonzaj.add( new Student(" ", " ",2));
-    bonzaj.add( new Student(" ", " ",1));
-    bonzaj.add( new Student(" ", " ",3));
-    bonzaj.add( new Student("kot", "bonifacy",7));
-    bonzaj.add( new Student(" ", " ",5));
-    bonzaj.add( new Student(" ", " ",12));
-    bonzaj.add( new Student("pies", "jamnik",8));
-    bonzaj.add( new Student(" ", " ",6));
-    bonzaj.add( new Student(" ", " ",9));
-    bonzaj.searching(7);
-    bonzaj.print_inorder();
-    bonzaj.displayBSF();
-    bonzaj.deletenode(4);
-    //in order jako sprawdzenie czy dziala wsm
-    bonzaj.print_inorder();
-    bonzaj.displayBSF();
-    bonzaj.deletenode(7);
-    bonzaj.displayBSF();
-    bonzaj.print_postorder();
+    BinarySearchTree *bonzaj = new BinarySearchTree();
+    bonzaj->insert(new Student("rybka", "nemo", 9));
+    bonzaj->insert(new Student("kot", "bonifacy", 2));
+    bonzaj->insert(new Student("pies", "jamnik", 8));
+    bonzaj->insert(new Student("kot", "filemon", 6));
+    bonzaj->insert(new Student("papuga", "gustaw", 1));
+    bonzaj->insert(new Student("owczarek", "czarek", 3));
+    bonzaj->insert(new Student("krowa", "wiktoria", 7));
+    bonzaj->insert(new Student("lama", "nina", 5));
+    bonzaj->insert(new Student("swinka", "antek", 4));
 
-return 0;}
+    std::cout << "znalaz³em: ";
+    bonzaj->find(6)->display();
+
+    std::cout << "\nwypisuje inorder\n";
+    bonzaj->print_inorder();
+    std::cout << "\nwyswietlam\n";
+    bonzaj->display();
+    std::cout << "\n\nusuwam\n";
+    bonzaj->remove(6);
+    std::cout << "wypisuje preorder\n";
+    bonzaj->print_preorder();
+
+    return 0;
+}

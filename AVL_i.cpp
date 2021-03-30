@@ -3,28 +3,30 @@
 #include"tree.hpp"
 
 int main(){
-    BalancedBST<Student> sosna;
-    sosna.add( new Student(" ", " ",4));
-    sosna.add( new Student(" ", " ",2));
-    sosna.add( new Student(" ", " ",1));
-    sosna.add( new Student(" ", " ",3));
-    sosna.add( new Student("kot", "bonifacy",7));
-    sosna.add( new Student("kot", "bonifacy",8));
-    sosna.add( new Student("kot", "bonifacy",9));
-    sosna.add( new Student("kot", "bonifacy",10));
-    sosna.add( new Student("kot", "bonifacy",81));
-    sosna.add( new Student("kot", "bonifacy",55));
-    sosna.add( new Student("kot", "bonifacy",56));
-    sosna.displayBSF();
-    sosna.remove(56);
-    sosna.displayBSF();
-    printf("bobo");
-    sosna.remove(1);
-    sosna.displayBSF();
-    sosna.add( new Student("kot", "bonifacy",46));
-    sosna.add( new Student("kot", "bonifacy",45));
-    sosna.displayBSF();
-    sosna.remove(3);
-    sosna.displayBSF();
+    BalancedBST *drzewko = new BalancedBST();
+    drzewko->insert(new Student("rybka", "nemo", 9));
+    drzewko->insert(new Student("kot", "bonifacy", 2));
+    drzewko->insert(new Student("pies", "jamnik", 8));
+    drzewko->insert(new Student("kot", "filemon", 6));
+    drzewko->insert(new Student("papuga", "gustaw", 1));
+    drzewko->insert(new Student("owczarek", "czarek", 3));
+    drzewko->insert(new Student("krowa", "wiktoria", 7));
+    drzewko->insert(new Student("lama", "nina", 5));
+    drzewko->insert(new Student("swinka", "antek", 4));
+
+    std::cout << "znalaz³em: ";
+    drzewko->find(6)->display();
+
+    std::cout << "\nwypisuje inorder\n";
+    drzewko->print_inorder();
+    std::cout << "\nwyswietlam\n";
+    drzewko->display();
+    std::cout << "\n\nusuwam\n";
+    drzewko->remove(6);
+    std::cout << "\nwyswietlam\n";
+    drzewko->display();
+    std::cout << "wypisuje preorder\n";
+    drzewko->print_preorder();
+
     return 0;
 }
