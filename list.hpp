@@ -2,17 +2,20 @@
 #define LIST_HPP_INCLUDED
 
 #include<string>
+#include"student.hpp"
 
-template <class T>
+/****************************/
+/**** ORDERED LIST CLASS ****/
+/****************************/
 class OrderedList {
 
-private:
+protected:
 
     struct Node {
         Node* next;
-        T* value;
+        Student* value;
 
-        Node(T* value) {
+        Node(Student* value) {
             this->value = value;
             next = nullptr;
         }
@@ -28,6 +31,12 @@ private:
 
     Node* head;
 
+    void push_front(Student* value) {
+        Node* new_node = new Node(value);
+        new_node->next = head;
+        head = new_node;
+    }
+
 public:
 
     OrderedList() {
@@ -41,12 +50,6 @@ public:
             ptr = ptr->next;
             delete temp;
         }
-    }
-
-    void add(T* value) {
-        Node* new_node = new Node(value);
-        new_node->next = head;
-        head = new_node;
     }
 
     void display() {
@@ -67,7 +70,7 @@ public:
         std::cout << result << std::endl;
     }
 
-    T* find(int key) {
+    Student* find(int key) {
         Node* ptr = head;
         while (ptr != nullptr) {
             if (ptr->get_key() == key) {
@@ -92,6 +95,10 @@ public:
         delete ptr;
     };
 
+    void insert(Student* value) {
+        push_front(value);
+    }
+
     int size() {
         Node *ptr = head;
         int counter = 0;
@@ -100,6 +107,46 @@ public:
             ptr = ptr->next;
         }
         return counter;
+    }
+};
+
+
+/**********************************/
+/******** SORTED LIST CLASS *******/
+/**********************************/
+class SortedList : public OrderedList {
+
+private:
+
+    /*** FIND POSITION FOR ELEMENT ***/
+    Node* find_position(int key) {
+        if (head == nullptr) {
+            return nullptr;
+        }
+        if (head->get_key() > key)
+            return nullptr;
+        auto iterator = head;
+        while (iterator->next != nullptr && iterator->next->get_key() < key) {
+            iterator = iterator->next;
+        }
+        return iterator;
+    }
+
+public:
+    using OrderedList::OrderedList;
+
+    /*** ADDING ELEMENT AND KEEP LIST SORTED ***/
+    void insert(Student* value) {
+        Node *position = find_position(value->get_key());
+        if (position == nullptr) {
+            this->push_front(value);
+        }
+        else {
+            Node *new_node = new Node(value);
+            Node *temp = position->next;
+            position->next = new_node;
+            new_node->next = temp;
+        }
     }
 };
 
