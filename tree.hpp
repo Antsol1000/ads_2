@@ -11,8 +11,7 @@ class BinarySearchTree {
 protected:
 
     /**** NESTED NODE CLASS ****/
-    class Node {
-    public:
+    struct Node {
         Node* left;
         Node* right;
         T* data;
@@ -294,6 +293,12 @@ template <class T>
 class BalancedBST : public BinarySearchTree<T> {
 
 private:
+
+    struct Node : public BinarySearchTree<T>::Node {
+        using BinarySearchTree<T>::Node::Node;
+        int factor;
+    };
+    Node *root;
 
     /***** START OF ROTATE METHODS *****/
     auto rotate_rr(auto node) {
