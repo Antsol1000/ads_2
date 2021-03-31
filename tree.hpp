@@ -1,6 +1,10 @@
 #ifndef TREE_HPP_INCLUDED
 #define TREE_HPP_INCLUDED
 
+int max(int a, int b) {
+    return (a >= b) ? a : b;
+}
+
 /****************************/
 /***** BinarySearchTree *****/
 /****************************/
@@ -14,10 +18,11 @@ protected:
         Node* left;
         Node* right;
         Student* value;
-        int balance_factor;
+        int height;
 
         Node(Student* value) {
             this->value = value;
+            this->height = 1;
             this->left = nullptr;
             this->right = nullptr;
         }
@@ -285,125 +290,116 @@ class BalancedBST : public BinarySearchTree {
 private:
 
     /***** START OF ROTATE METHODS *****/
-    Node* rotate_rr(Node* node) {
+    Node* rotate_right(Node* node) {
         Node* child = node->left;
-        Node* grandchild = child->left;
-        node->left = child->right;
+        Node* temp = child->right;
         child->right = node;
+        node->left = temp;
+        child->height = max(get_height(child->left), get_height(child->right)) + 1;
+        node->height = max(get_height(node->left), get_height(node->right)) + 1;
         return child;
     }
 
-    Node* rotate_ll(Node* node) {
+    Node* rotate_left(Node* node) {
         Node* child = node->right;
-        Node* grandchild = child->right;
-        node->right = child->left;
+        Node* temp = child->left;
         child->left = node;
+        node->right = temp;
+        node->height = max(get_height(node->left), get_height(node->right)) + 1;
+        child->height = max(get_height(child->left), get_height(child->right)) + 1;
         return child;
-    }
-
-    Node* rotate_rl(Node* node) {
-        Node* child = node->left;
-        Node* grandchild = child->right;
-        Node* temp1 = grandchild->right;
-        Node* temp2 = grandchild->left;
-        child->right = temp2;
-        node->left = temp1;
-        grandchild->right = node;
-        grandchild->left = child;
-        return grandchild;
-    }
-
-    Node* rotate_lr(Node* node) {
-        Node* child = node->right;
-        Node* grandchild = child->left;
-        Node* temp2 = grandchild->right;
-        Node* temp1 = grandchild->left;
-        child->left = temp2;
-        node->right = temp1;
-        grandchild->right = child;
-        grandchild->left = node;
-        return grandchild;
     }
     /***** END OF ROTATE METHODS *****/
 
     /***** START OF BALANCING METHODS *****/
-    int get_bf(Node* bulwa) {
-        if (bulwa == nullptr) {
-            return 0;
-        } else {
-            return height_recursive(bulwa->left) - height_recursive(bulwa->right);
-        }
+    int get_height(Node* node) {
+        if (node != nullptr)
+            return node->height;
+        return 0;
     }
 
-    Node* balancing_act(Node* bulwa) {
-        int bf = this->get_bf(bulwa);
-        int bfl = this->get_bf(bulwa->left);
-        int bfr = this->get_bf(bulwa->right);
-        if (bf > 1 && bfl >= 1) {
-            bulwa = rotate_rr(bulwa);
+    int get_bf(Node* node) {
+        if (node == nullptr) {
+            return 0;
+        } else {
+            return get_height(node->right) - get_height(node->left);
         }
-        else if (bf < -1 && bfr <= 0) {
-            bulwa = rotate_ll(bulwa);
-        }
-        else if (bf < -1 && bfr >= 0) {
-            bulwa = rotate_lr(bulwa);
-        }
-        else if (bf > 1 && bfl <= -1) {
-            bulwa = rotate_rl(bulwa);
-        }
-        return bulwa;
     }
     /***** END OF BALANCING METHODS *****/
 
     /***** ADD RECURSIVE METHOD *****/
-    Node* add_recursive(Node* newnode, Node* cur) {
+    Node* insert_recursive(Node* newnode, Node* cur) {
         if (cur == nullptr) {
             cur = newnode;
             return cur;
         }
         else if (cur->get_key() > newnode->get_key()) {
-            cur->left = add_recursive(newnode, cur->left);
+            cur->left = insert_recursive(newnode, cur->left);
         }
         else {
-            cur->right = add_recursive(newnode, cur->right);
+            cur->right = insert_recursive(newnode, cur->right);
         }
-        return balancing_act(cur);
+        cur->height = max(get_height(cur->left), get_height(cur->right)) + 1;
+        int bf = get_bf(cur);
+        int key = newnode->get_key();
+        if (bf < -1 && key < cur->left->get_key())
+            return rotate_right(cur);
+        if (bf > 1 && key > cur->right->get_key())
+            return rotate_left(cur);
+        if (bf < -1 && key > cur->left->get_key()) {
+            cur->left = rotate_left(cur->left);
+            return rotate_right(cur);
+        }
+        if (bf > 1 && key < cur->right->get_key()) {
+            cur->right = rotate_right(cur->right);
+            return rotate_left(cur);
+        }
+        return cur;
     }
 
     /***** REMOVE RECURSIVE METHOD *****/
     Node* remove_recursive(Node* node, int key) {
-        if (node == nullptr) {
+        if (node == nullptr)
             return node;
-        }
-        else if (node->get_key() > key) {
+
+        if (node->get_key() > key) {
             node->left = remove_recursive(node->left, key);
-            if (node->left) {
-                node->left = balancing_act(node->left);
-            }
         }
         else if (node->get_key() < key) {
             node->right = remove_recursive(node->right, key);
-            if (node->right) {
-                node->right = balancing_act(node->right);
-            }
         }
         else {
             if (node->left == nullptr) {
                 Node* temp = node->right;
                 delete node;
                 return temp;
-            } else if(node->right == nullptr) {
+            }
+            else if(node->right == nullptr) {
                 Node* temp = node->left;
                 delete node;
                 return temp;
-            } else {
+            }
+            else {
                 Node* temp = this->RST(node->right);
                 node->value = temp->value;
                 node->right = remove_recursive(node->right, temp->get_key());
-                if(node->right) {
-                    node->right = balancing_act(node->right);
-                }
             }
+        }
+        if (node == nullptr)
+            return node;
+        node->height = 1 + max(get_height(node->left), get_height(node->right));
+        int bf = get_bf(node);
+        if (bf < -1 && get_bf(node->left) <= 0)
+            return rotate_right(node);
+        if (bf < -1 && get_bf(node->left) > 0) {
+            node->left = rotate_left(node->left);
+            return rotate_right(node);
+        }
+        if (bf > 1 && get_bf(node->right) >= 0)
+            return rotate_left(node);
+        if (bf > 1 && get_bf(node->right) < 0) {
+            node->right = rotate_right(node->right);
+            return rotate_left(node);
         }
         return node;
     }
@@ -416,13 +412,12 @@ public:
     ///REMOVING
     void remove(int key) {
         this->root = remove_recursive(this->root, key);
-        this->root = balancing_act(root);
     }
 
     ///INSERTION
-    auto insert(Student* value) {
+    void insert(Student* value) {
         Node* new_node = new Node(value);
-        this->root = add_recursive(new_node, this->root);
+        this->root = insert_recursive(new_node, this->root);
     }
 };
 

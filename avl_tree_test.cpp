@@ -14,15 +14,17 @@ int main(){
     drzewko->insert(new Student("lama", "nina", 5));
     drzewko->insert(new Student("swinka", "antek", 4));
 
-    std::cout << "znalaz³em: ";
+    std::cout << "znalazlem: ";
     drzewko->find(6)->display();
+
+    drzewko->display();
 
     std::cout << "\nwypisuje inorder\n";
     drzewko->print_inorder();
     std::cout << "\nwyswietlam\n";
     drzewko->display();
     std::cout << "\n\nusuwam\n";
-    drzewko->remove(6);
+    drzewko->remove(2);
     std::cout << "\nwyswietlam\n";
     drzewko->display();
     std::cout << "wypisuje preorder\n";
