@@ -1,6 +1,8 @@
 #ifndef TREE_HPP_INCLUDED
 #define TREE_HPP_INCLUDED
 
+#include "student.hpp"
+
 int max(int a, int b) {
     return (a >= b) ? a : b;
 }

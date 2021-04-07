@@ -3,7 +3,7 @@
 #include<ctime>
 #include<string>
 #include<algorithm>
-#include"../headers/list.hpp"
+#include"../headers/tree.hpp"
 
 const int SIZE_STEP = 2000;
 const int MAX_SIZE = 50000;
@@ -14,7 +14,7 @@ int main() {
 
     // open file with results of trials
     std::ofstream wyniki;
-    wyniki.open("list_results.csv");
+    wyniki.open("bst_results.csv");
     wyniki << "test_number;number_of_records;add_time;search_time;remove_time" << std::endl;
 
 
@@ -31,14 +31,14 @@ int main() {
         file.close();
 
         // create data structure
-        SortedList list;
+        BinarySearchTree tree;
         clock_t start_t, end_t;
 
         // add all elements and measure time
         double add_time;
         start_t = clock();
         for (int i = 0; i < SIZE; i++) {
-            list.insert(new Student(ARRAY[i].substr(8, 12), ARRAY[i].substr(21, 12), std::stoi(ARRAY[i].substr(0, 7))));
+            tree.insert(new Student(ARRAY[i].substr(8, 12), ARRAY[i].substr(21, 12), std::stoi(ARRAY[i].substr(0, 7))));
         }
         end_t = clock();
         add_time = (double) (end_t - start_t);
@@ -48,7 +48,7 @@ int main() {
         double search_time;
         start_t = clock();
         for (int i = 0; i < SIZE; i++) {
-            list.find(std::stoi(ARRAY[i].substr(0, 7)));
+            tree.find(std::stoi(ARRAY[i].substr(0, 7)));
         }
         end_t = clock();
         search_time = (double) (end_t - start_t);
@@ -58,13 +58,13 @@ int main() {
         double remove_time;
         start_t = clock();
         for (int i = 0; i < SIZE; i++) {
-            list.remove(std::stoi(ARRAY[i].substr(0, 7)));
+            tree.remove(std::stoi(ARRAY[i].substr(0, 7)));
         }
         end_t = clock();
         remove_time = (double) (end_t - start_t);
 
         // delete data structure and ARRAY with records
-        delete &list;
+        delete &tree;
         delete []ARRAY;
 
         // print results to the file
