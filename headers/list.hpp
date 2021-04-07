@@ -15,7 +15,8 @@ protected:
     /**** NODE STRUCTURE WITH STUDENT ****/
     /*************************************/
     struct Node {
-        Node* next; /// POINTER TO NEXT NODE
+        /// POINTER TO NEXT NODE
+        Node* next;
         Student* value;
 
         Node(Student* value) {
@@ -66,6 +67,12 @@ public:
     }
 
     void remove(int key) {
+        if (head->get_key() == key) {
+            Node* temp = head->next;
+            delete head;
+            head = temp;
+            return;
+        }
         Node* ptr = head;
         Node* prev = nullptr;
         while (ptr != nullptr && ptr->get_key() != key) {

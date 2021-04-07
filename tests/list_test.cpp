@@ -1,6 +1,6 @@
 #include<iostream>
-#include"student.hpp"
-#include"list.hpp"
+#include"../headers/student.hpp"
+#include"../headers/list.hpp"
 
 int main() {
     SortedList *lista = new SortedList();

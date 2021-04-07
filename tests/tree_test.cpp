@@ -1,6 +1,6 @@
 #include<iostream>
-#include"student.hpp"
-#include"tree.hpp"
+#include"../headers/student.hpp"
+#include"../headers/tree.hpp"
 
 int main(){
     BinarySearchTree *bonzaj = new BinarySearchTree();
