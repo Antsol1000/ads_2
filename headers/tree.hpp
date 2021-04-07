@@ -289,6 +289,8 @@ private:
     /***** START OF ROTATE METHODS *****/
     Node* rotate_right(Node* node) {
         Node* child = node->left;
+        if (child == nullptr)
+            return child;
         Node* temp = child->right;
         child->right = node;
         node->left = temp;
@@ -299,6 +301,8 @@ private:
 
     Node* rotate_left(Node* node) {
         Node* child = node->right;
+        if (child == nullptr)
+            return child;
         Node* temp = child->left;
         child->left = node;
         node->right = temp;
