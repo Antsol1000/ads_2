@@ -1,34 +1,27 @@
 #include<iostream>
-#include"../headers/student.hpp"
+#include<algorithm>
+#include<ctime>
 #include"../headers/tree.hpp"
 
 int main(){
+    srand(time(0));
+    const int size = 20;
     BalancedBST *drzewko = new BalancedBST();
-    drzewko->insert(new Student("rybka", "nemo", 9));
-    drzewko->insert(new Student("kot", "bonifacy", 2));
-    drzewko->insert(new Student("pies", "jamnik", 8));
-    drzewko->insert(new Student("kot", "filemon", 6));
-    drzewko->insert(new Student("papuga", "gustaw", 1));
-    drzewko->insert(new Student("owczarek", "czarek", 3));
-    drzewko->insert(new Student("krowa", "wiktoria", 7));
-    drzewko->insert(new Student("lama", "nina", 5));
-    drzewko->insert(new Student("swinka", "antek", 4));
+    int t[size] =  {15,17,6,20,8,11,14,19,13,2,12,9,18,10,55,7,16,4,1,3};
 
-    std::cout << "znalazlem: ";
-    drzewko->find(6)->display();
+    for (int i = 0; i < size; i++) {
+        drzewko->display();
+        drzewko->insert(new Student("", "", t[i]));
+    }
 
+    drzewko->insert(new Student("", "", 5));
     drzewko->display();
+    std::random_shuffle(t, t+size);
 
-    std::cout << "\nwypisuje inorder\n";
-    drzewko->print_inorder();
-    std::cout << "\nwyswietlam\n";
-    drzewko->display();
-    std::cout << "\n\nusuwam\n";
-    drzewko->remove(2);
-    std::cout << "\nwyswietlam\n";
-    drzewko->display();
-    std::cout << "wypisuje preorder\n";
-    drzewko->print_preorder();
+    for (int i = 0; i < size; i++) {
+        drzewko->remove(t[i]);
+    }
+    delete &drzewko;
 
     return 0;
 }

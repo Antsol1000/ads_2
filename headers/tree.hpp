@@ -144,9 +144,6 @@ protected:
             node->right = remove_recursive(node->right, key);
         }
         else {
-            //now we are in the parent of the node to be deleted, we will have to use
-            //either LST or RST to find a replacement for it
-            //1 CHILD
             if (node->left == nullptr) {
                 Node* temp = node->right;
                 delete node;
@@ -158,9 +155,7 @@ protected:
                 return temp;
             }
             else {
-                //2 CHILDREN
-                //2 choices - LST or RST
-                Node* temp = RST(node->right);
+                Node* temp = this->RST(node->right);
                 node->value = temp->value;
                 node->right = remove_recursive(node->right, temp->get_key());
             }
@@ -218,12 +213,12 @@ public:
     /***** ADDING NODE METHOD *****/
     void insert(Student* value){
         Node* newnode = new Node(value);
-        root = insert_recursive(newnode, root);
+        this->root = insert_recursive(newnode, root);
     }
 
     /***** REMOVING NODE METHOD *****/
     void remove(int key) {
-        remove_recursive(root, key);
+        this->root = remove_recursive(root, key);
     }
 
     /***** RETURN HEIGHT OF TREE *****/

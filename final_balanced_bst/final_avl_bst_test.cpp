@@ -5,8 +5,8 @@
 #include<algorithm>
 #include"../headers/tree.hpp"
 
-const int SIZE_STEP = 2000;
-const int MAX_SIZE = 50000;
+const int SIZE_STEP = 100;
+const int MAX_SIZE = 10000;
 const int NUM_OF_TESTS = MAX_SIZE / SIZE_STEP;
 
 int main() {
@@ -38,6 +38,7 @@ int main() {
         double add_time;
         start_t = clock();
         for (int i = 0; i < SIZE; i++) {
+            std::cout << "wkladam " << i << std::endl;
             tree.insert(new Student(ARRAY[i].substr(8, 12), ARRAY[i].substr(21, 12), std::stoi(ARRAY[i].substr(0, 7))));
         }
         end_t = clock();
@@ -69,6 +70,8 @@ int main() {
 
         // print results to the file
         wyniki << test_number  << ";" << SIZE << ";" << add_time << ";" << search_time << ";" << remove_time << std::endl;
+
+        std::cout << "test nr" << test_number << " zakonczony\n";
     }
 
     // close results file

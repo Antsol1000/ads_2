@@ -6,7 +6,7 @@
 #include"../headers/tree.hpp"
 
 const int SIZE_STEP = 2000;
-const int MAX_SIZE = 50000;
+const int MAX_SIZE = 100000;
 const int NUM_OF_TESTS = MAX_SIZE / SIZE_STEP;
 
 int main() {
@@ -33,7 +33,6 @@ int main() {
         // create data structure
         BinarySearchTree tree;
         clock_t start_t, end_t;
-
         // add all elements and measure time
         double add_time;
         start_t = clock();
@@ -69,6 +68,7 @@ int main() {
 
         // print results to the file
         wyniki << test_number  << ";" << SIZE << ";" << add_time << ";" << search_time << ";" << remove_time << std::endl;
+        std::cout << "test number " << test_number << std::endl;
     }
 
     // close results file

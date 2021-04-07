@@ -69,6 +69,7 @@ int main() {
 
         // print results to the file
         wyniki << test_number  << ";" << SIZE << ";" << add_time << ";" << search_time << ";" << remove_time << std::endl;
+        std::cout << "test number " << test_number << std::endl;
     }
 
     // close results file
