@@ -24,7 +24,7 @@ protected:
 
         Node(Student* value) {
             this->value = value;
-            this->height = 1;
+            this->height = 0;
             this->left = nullptr;
             this->right = nullptr;
         }
@@ -88,7 +88,7 @@ protected:
             for (int j = 0; j < blanks; j++) {
                 std::cout << " ";
             }
-            std::cout << node->get_key();
+            std::cout << node->get_key()<<"|h:"<<node->height;
             for (int j = 0; j < blanks; j++) {
                 std::cout << " ";
             }
@@ -146,17 +146,21 @@ protected:
         else {
             if (node->left == nullptr) {
                 Node* temp = node->right;
+
                 delete node;
                 return temp;
             }
             else if (node->right == nullptr) {
                 Node* temp = node->left;
+
                 delete node;
                 return temp;
             }
             else {
-                Node* temp = this->RST(node->right);
+                Node* temp = RST(node->right);
+                Student* temporary = node->value;
                 node->value = temp->value;
+                temp->value = temporary;
                 node->right = remove_recursive(node->right, temp->get_key());
             }
         }
@@ -223,17 +227,21 @@ public:
 
     /***** RETURN HEIGHT OF TREE *****/
     int get_height() {
+
         return height_recursive(root);
     }
 
     /***** RETURN NUMBER OF NODES *****/
-    int get_size() {
-        Node* iterator = root;
+    int get_size(Node* root) {
+
         if (this->is_empty()) {
             return 0;
         }
         return 1 + get_size_recursive(root->left) + get_size_recursive(root->right);
     }
+    int print_height(){
+        int o =height_recursive(root);
+    return o;}
 
     /************ LOOKING FOR NODE WITH SPECIFIC KEY ************/
     Student* find(int key) {
@@ -285,6 +293,73 @@ public:
 class BalancedBST : public BinarySearchTree {
 
 private:
+int get_h(Node* node){
+	 if(node ==nullptr){return -1;}
+	 return node->height;}
+
+int update_height(Node* node){
+	return max(get_h(node->left), get_h(node->right)) +1;}
+
+Node* rotaterr(Node* node) {
+        Node* child;
+        child = node->left;
+        Node* temp;
+        temp = child->right;
+        node->left = temp;
+        child->right = node;
+        node->height = update_height(node);
+        child->height = update_height(child);
+
+        return child;}
+
+    Node* rotatell(Node* node) {
+        Node* child;
+        child = node->right;
+        Node* temp;
+        temp = child->left;
+        node->right = temp;
+        child->left = node;
+        node->height = update_height(node);
+        child->height = update_height(child);
+
+        return child;}
+
+//node->right && node->right->left
+    Node* rotaterl(Node* node) {
+        Node* child;
+        child = node->right;
+        Node* grandchild;
+        grandchild = child->left;
+        Node* temp1;
+        Node* temp2;
+        temp2 = grandchild->right;
+        temp1 = grandchild->left;
+        child->left = temp2;
+        node->right = temp1;
+        grandchild->left = node;
+        grandchild->right = child;
+        node->height = update_height(node);
+        child->height = update_height(child);
+        grandchild->height = update_height(grandchild);
+        return grandchild;}
+//node->left && node->left->right
+    Node* rotatelr(Node* node) {
+        Node* child;
+        child = node->left;
+        Node* grandchild;
+        grandchild = child->right;
+        Node* temp1;
+        Node* temp2;
+        temp2 = grandchild->right;
+        temp1 = grandchild->left;
+        child->right = temp1;
+        node->left = temp2;
+        grandchild->right = node;
+        grandchild->left = child;
+        node->height = update_height(node);
+        child->height = update_height(child);
+        grandchild->height = update_height(grandchild);
+        return grandchild;}
 
     /***** START OF ROTATE METHODS *****/
     Node* rotate_right(Node* node) {
@@ -294,8 +369,9 @@ private:
         Node* temp = child->right;
         child->right = node;
         node->left = temp;
-        child->height = max(get_height(child->left), get_height(child->right)) + 1;
-        node->height = max(get_height(node->left), get_height(node->right)) + 1;
+        node->height = update_height(node);
+        child->height = update_height(child);
+
         return child;
     }
 
@@ -306,8 +382,9 @@ private:
         Node* temp = child->left;
         child->left = node;
         node->right = temp;
-        node->height = max(get_height(node->left), get_height(node->right)) + 1;
-        child->height = max(get_height(child->left), get_height(child->right)) + 1;
+
+        node->height = update_height(node);
+        child->height = update_height(child);
         return child;
     }
     /***** END OF ROTATE METHODS *****/
@@ -316,10 +393,17 @@ private:
     int get_height(Node* node) {
         if (node != nullptr)
             return node->height;
-        return 0;
+        return -1;
     }
 
     int get_bf(Node* node) {
+        if (node == nullptr) {
+            return 0;
+        } else {
+            return height_recursive(node->right) - height_recursive(node->left);
+        }
+    }
+    int get_bfkonk(Node* node) {
         if (node == nullptr) {
             return 0;
         } else {
@@ -340,23 +424,23 @@ private:
         else {
             cur->right = insert_recursive(newnode, cur->right);
         }
-        cur->height = max(get_height(cur->left), get_height(cur->right)) + 1;
-        int bf = get_bf(cur);
+        cur->height = update_height(cur);
+        int bf = get_bfkonk(cur);
         int key = newnode->get_key();
-        if (bf < -1 && key < cur->left->get_key())
-            return rotate_right(cur);
-        if (bf > 1 && key > cur->right->get_key())
-            return rotate_left(cur);
-        if (bf < -1 && key > cur->left->get_key()) {
-            cur->left = rotate_left(cur->left);
-            return rotate_right(cur);
-        }
-        if (bf > 1 && key < cur->right->get_key()) {
-            cur->right = rotate_right(cur->right);
-            return rotate_left(cur);
-        }
+        if (bf < -1 && key < cur->left->get_key()){
+            return rotate_right(cur);}
+        if (bf > 1 && key > cur->right->get_key()){
+            return rotatell(cur);}
+        if(cur->left!=nullptr && bf < -1 && key > cur->left->get_key()){
+        	if(cur->left->right!=nullptr){
+    			return(rotatelr(cur)); }}
+    	if(cur->right!=nullptr && bf > 1 && key < cur->right->get_key()){
+        	if(cur->right->left!=nullptr){
+        		return(rotaterl(cur)); }}
         return cur;
     }
+
+
 
     /***** REMOVE RECURSIVE METHOD *****/
     Node* remove_recursive(Node* node, int key) {
@@ -381,26 +465,27 @@ private:
                 return temp;
             }
             else {
-                Node* temp = this->RST(node->right);
+                Node* temp = RST(node->right);
+                Student* temporary = node->value;
                 node->value = temp->value;
+                temp->value = temporary;
                 node->right = remove_recursive(node->right, temp->get_key());
             }
         }
-        if (node == nullptr)
-            return node;
-        node->height = 1 + max(get_height(node->left), get_height(node->right));
-        int bf = get_bf(node);
-        if (bf < -1 && get_bf(node->left) <= 0)
-            return rotate_right(node);
-        if (bf < -1 && get_bf(node->left) > 0) {
+        if (node == nullptr){return node;}
+        node->height = update_height(node);
+        int bf = get_bfkonk(node);
+        if (bf < -1 && get_bfkonk(node->left) <= 0)
+            return rotaterr(node);
+        if (bf < -1 && get_bfkonk(node->left) > 0) {
             node->left = rotate_left(node->left);
-            return rotate_right(node);
+            return rotaterr(node);
         }
-        if (bf > 1 && get_bf(node->right) >= 0)
-            return rotate_left(node);
-        if (bf > 1 && get_bf(node->right) < 0) {
+        if (bf > 1 && get_bfkonk(node->right) >= 0)
+            return rotatell(node);
+        if (bf > 1 && get_bfkonk(node->right) < 0) {
             node->right = rotate_right(node->right);
-            return rotate_left(node);
+            return rotatell(node);
         }
         return node;
     }
@@ -409,6 +494,20 @@ private:
 /************************** PUBLIC SECTION *****************************/
 public:
     using BinarySearchTree::BinarySearchTree;
+
+	int get_size(Node* root) {
+
+        if (this->is_empty()) {
+            return 0;
+        }
+        return 1 + get_size_recursive(root->left) + get_size_recursive(root->right);
+    }
+
+
+
+	int sizee(){
+	int o = get_size_recursive(this->root);
+	return o;}
 
     ///REMOVING
     void remove(int key) {
